@@ -1,14 +1,20 @@
 import express from 'express';
-import swagger from 'swagger-ui-express';
-const app = express(); //app significa server. No aplicación 
+import swaggerUI from 'swagger-ui-express';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const swaggerDocumentation = require('./swagger-output.json');
+
+
+const app = express();
 const port = 3000;
 
-app.use("/api-docs",swaggerUI.serve, swaggerUI.setup());
-app.listen(3000, () => {
-  console.log(`El servidor funciona en http://localhost:${port}`);
-});
+// Middleware para leer JSON en el body
+app.use(express.json());
 
+// Documentación Swagger
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocumentation));
 
+// Datos de ejemplo
 const profesores = [
   { id: 1, nombre: 'Christian', apellido: 'Manrique' },
   { id: 2, nombre: 'Juan', apellido: 'Perez' },
@@ -21,28 +27,33 @@ const estudiantes = [
   { id: 3, nombre: 'Pedro', apellido: 'Gonzalez' }
 ];
 
-//endpoints get
+// Rutas GET
+app.get('/', (req, res) => {
+  res.send('Hola mundo. He creado mi primer API con Node.js y Express.');
+});
+
 app.get('/profesores', (req, res) => {
   res.json(profesores);
 });
 
 app.get('/api/estudiantes', (req, res) => {
   res.json(estudiantes);
-}); 
-
-app.get('/', (req, res) => {
-  res.send('Hola mundo. He creado mi primer API con Node.js y Express.');
 });
 
-//endpoints post
+// Ruta POST
 app.post('/profesores', (req, res) => {
-    const nuevoProfesor = req.body;
-    profesores.push(nuevoProfesor);
-    res.status(201).json(nuevoProfesor);
+  const nuevoProfesor = req.body;
+  profesores.push(nuevoProfesor);
+  res.status(201).json(nuevoProfesor);
 });
 
-
-// Para error 404
+// Ruta 404
 app.use((req, res) => {
   res.status(404).send('Error 404. Página no encontrada.');
-});x
+});
+
+// Servidor
+app.listen(port, () => {
+  console.log(`Servidor en http://localhost:${port}`);
+  console.log(`Documentación Swagger en http://localhost:${port}/api-docs`);
+});
