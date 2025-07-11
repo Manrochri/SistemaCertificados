@@ -1,10 +1,13 @@
 import express from 'express';
-const app = express();
+import swagger from 'swagger-ui-express';
+const app = express(); //app significa server. No aplicación 
 const port = 3000;
 
+app.use("/api-docs",swaggerUI.serve, swaggerUI.setup());
 app.listen(3000, () => {
   console.log(`El servidor funciona en http://localhost:${port}`);
 });
+
 
 const profesores = [
   { id: 1, nombre: 'Christian', apellido: 'Manrique' },
@@ -19,7 +22,7 @@ const estudiantes = [
 ];
 
 //endpoints get
-app.get('/api/profesores', (req, res) => {
+app.get('/profesores', (req, res) => {
   res.json(profesores);
 });
 
@@ -33,7 +36,13 @@ app.get('/', (req, res) => {
 
 //endpoints post
 app.post('/profesores', (req, res) => {
-  const nuevoProfesor = req.body;
-  profesores.push(nuevoProfesor);
-  res.status(201).json(nuevoProfesor);
+    const nuevoProfesor = req.body;
+    profesores.push(nuevoProfesor);
+    res.status(201).json(nuevoProfesor);
 });
+
+
+// Para error 404
+app.use((req, res) => {
+  res.status(404).send('Error 404. Página no encontrada.');
+});x
