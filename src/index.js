@@ -7,7 +7,7 @@ import swaggerUI from 'swagger-ui-express';
 import dotenv from 'dotenv';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const swaggerDocument = require('./docs/swagger-output.json');  // 👈
+const swaggerDocument = require('./docs/swagger-output.json');  
 
 dotenv.config();
 
